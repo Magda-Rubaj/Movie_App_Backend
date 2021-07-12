@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+    db:
+        image: postgres
+        ports:
+            - '5432'
+        environment:
+          - POSTGRES_DB=${DB_NAME}
+          - POSTGRES_USER=${DB_USER}
+          - POSTGRES_PASSWORD=${DB_PASSWORD}
+    web:
+        build: .
+        command: python manage.py runserver
+        volumes:
+            - .:/movies
+        ports:
+            - "8000:8000"
+        depends_on:
+            - db
+        links:
+            - db:db
