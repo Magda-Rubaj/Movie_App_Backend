@@ -1,3 +1,4 @@
 movieapp/
 __pycache__/
 .env
+migrations/
