@@ -1,7 +1,6 @@
 FROM python:3
-ENV PYTHONUNBUFFERED 1
-RUN mkdir /movies
+ENV PYTHONUNBUFFERED=1
 WORKDIR /movies
 COPY requirements.txt /movies/
 RUN pip install -r requirements.txt
-COPY . /nmovies/
+COPY . /movies/
