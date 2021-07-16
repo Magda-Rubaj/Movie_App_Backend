@@ -11,3 +11,7 @@ class Movie(models.Model):
     rating = models.IntegerField(default=5)
 
 
+class Actor(models.Model):
+    name = models.CharField(max_length=50)
+    birth_date = models.DateField
+    rating = models.IntegerField(default=5)
