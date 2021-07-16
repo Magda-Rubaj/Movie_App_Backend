@@ -1,11 +1,11 @@
 
 from rest_framework import viewsets
-from .permissions import IsPostOrAuth
+from .permissions import IsPostAdminOrSelf
 from .models import User
 from .serializers import UserSerializer
 
 
 class UserView(viewsets.ModelViewSet):
-    permission_classes = (IsPostOrAuth, )
+    permission_classes = (IsPostAdminOrSelf, )
     serializer_class = UserSerializer
     queryset = User.objects.all()
