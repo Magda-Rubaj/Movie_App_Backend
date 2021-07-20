@@ -7,7 +7,7 @@ class Movie(models.Model):
     production_year = models.IntegerField()
     image = models.ImageField(default='defaults\movie.jpg', upload_to='posted_movies',)
     description = models.TextField()
-    added_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, default=1)
+    added_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     rating = models.IntegerField(default=0)
 
     def __str__(self):
@@ -18,7 +18,7 @@ class Actor(models.Model):
     name = models.CharField(max_length=50)
     birth_date = models.DateField()
     rating = models.IntegerField(default=0)
-    #roles = models.ManyToManyField(Movie)
+    roles = models.ManyToManyField(Movie)
     added_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
     def __str__(self):
@@ -28,7 +28,7 @@ class Director(models.Model):
     name = models.CharField(max_length=50)
     birth_date = models.DateField()
     rating = models.IntegerField(default=0)
-    #directed = models.ManyToManyField(Movie)
+    directed = models.ManyToManyField(Movie)
     added_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
     def __str__(self):
