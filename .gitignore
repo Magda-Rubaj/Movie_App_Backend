@@ -2,3 +2,6 @@ movieapp/
 __pycache__/
 .env
 migrations/
+posted_movies/
+.coverage
+htmlcov/
