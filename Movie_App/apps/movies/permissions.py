@@ -9,6 +9,6 @@ class IsAdminOrOwner(BasePermission):
         return request.user.is_authenticated
     
     def has_object_permission(self, request, view, obj):
-        if request.user.is_admin:
+        if request.user.is_authenticated and request.user.is_admin:
             return True
         return obj.added_by == request.user
