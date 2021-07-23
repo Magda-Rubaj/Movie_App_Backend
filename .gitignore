@@ -3,5 +3,7 @@ __pycache__/
 .env
 migrations/
 posted_movies/
+posted_actors/
+posted_directors/
 .coverage
 htmlcov/
