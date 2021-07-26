@@ -17,14 +17,15 @@ class MoviePartSerializer(serializers.ModelSerializer):
 
 
 class ActorSerializer(WritableNestedModelSerializer):
-    roles = MoviePartSerializer(many=True)
+    roles = MoviePartSerializer(many=True, required=False)
     class Meta:
         model = Actor
         fields = ('id', 'name', 'birth_date', 'image','rating', 
                   'roles', 'added_by', 'rating_count', 'users_voted')
 
+
 class DirectorSerializer(serializers.ModelSerializer):
-    directed = MoviePartSerializer(many=True)
+    directed = MoviePartSerializer(many=True, required=False)
     class Meta:
         model = Director
         fields = ('id', 'name', 'birth_date',  'image', 'rating', 
