@@ -9,6 +9,7 @@ class MovieView(viewsets.ModelViewSet):
     permission_classes = (IsAdminOrOwner, )
     serializer_class = MovieSerializer
     queryset = Movie.objects.all()
+    
 
 class ActorView(viewsets.ModelViewSet):
     permission_classes = (IsAdminOrOwner, )
@@ -21,6 +22,7 @@ class ActorView(viewsets.ModelViewSet):
         }
         serializer = mapping.get(request.method.lower(), MovieSerializer)
         return super().dispatch(request, *args, **kwargs)
+
 
 class DirectorView(viewsets.ModelViewSet):
     permission_classes = (IsAdminOrOwner, )

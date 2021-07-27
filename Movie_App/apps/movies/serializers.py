@@ -9,6 +9,12 @@ class MovieSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'production_year', 'image',
                   'description', 'added_by', 'rating', 'rating_count', 'users_voted')
 
+    def validate_users_voted(self, value):
+        user =  self.context['request'].user
+        if user in value:
+            raise serializers.ValidationError("User already voted")
+        return value
+
 
 class MoviePartSerializer(serializers.ModelSerializer):
     class Meta:
@@ -23,6 +29,13 @@ class ActorSerializer(WritableNestedModelSerializer):
         fields = ('id', 'name', 'birth_date', 'image','rating', 
                   'roles', 'added_by', 'rating_count', 'users_voted')
 
+    def validate_users_voted(self, value):
+        user =  self.context['request'].user
+        if user in value:
+            raise serializers.ValidationError("User already voted")
+        return value
+
+
 
 class DirectorSerializer(serializers.ModelSerializer):
     directed = MoviePartSerializer(many=True, required=False)
@@ -30,3 +43,9 @@ class DirectorSerializer(serializers.ModelSerializer):
         model = Director
         fields = ('id', 'name', 'birth_date',  'image', 'rating', 
                   'directed', 'added_by', 'rating_count', 'users_voted')
+    
+    def validate_users_voted(self, value):
+        user =  self.context['request'].user
+        if user in value:
+            raise serializers.ValidationError("User already voted")
+        return value
