@@ -18,6 +18,24 @@ services:
             - "8000:8000"
         depends_on:
             - db
+            - rabbitmq
         links:
             - db:db
+            - rabbitmq:rabbitmq
+    rabbitmq:
+        image: rabbitmq:3-management-alpine
+        ports:
+            - 5672:5672
+            - 15672:15672
+    celery-worker:
+        build: .
+        command: celery -A Movie_App worker -l info
+        volumes:
+            - .:/movies
+        restart: always
+        depends_on:
+            - db
+            - web
+            - rabbitmq
+
             

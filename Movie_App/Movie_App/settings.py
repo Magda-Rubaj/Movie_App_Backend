@@ -34,6 +34,8 @@ AUTH_USER_MODEL = 'accounts.User'
 
 # Application definition
 
+CELERY_BROKER_URL = 'amqp://guest:guest@rabbitmq:5672/%2F'
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -46,6 +48,7 @@ INSTALLED_APPS = [
     'apps.accounts',
     'apps.movies',
     'rest_framework_simplejwt',
+    'django_celery_results',
 ]
 
 REST_FRAMEWORK = {
