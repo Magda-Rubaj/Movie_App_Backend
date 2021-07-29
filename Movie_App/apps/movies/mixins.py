@@ -20,6 +20,7 @@ class ExternalCallMixin:
         mapping = {
             "get": requests.get
         }
+        params = {"page":2}
         method = request.method.lower()
-
-        return Response(mapping[method](url, data=json.dumps(request.data)).json())
+        data = mapping[method](url, params=params).json()
+        return Response(data=data)
