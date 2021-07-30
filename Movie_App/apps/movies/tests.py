@@ -43,7 +43,7 @@ class DetailMovieTests(APITestCase):
 
     def setUp(self):
         self.factory = APIRequestFactory()
-        self.view = MovieView.as_view(actions={'get': 'retrieve'})
+        self.view = MovieView.as_view(actions={'get': 'retrieve', 'delete': 'destroy'})
 
         self.regular_user = User.objects.create_user(
             email='example@example.com', 
@@ -71,19 +71,24 @@ class DetailMovieTests(APITestCase):
         )
     
     def test_regular_owner(self):
-        request = self.factory.get('/movies/{0}/'.format(self.movie_owned_regular.id))
+        request = self.factory.delete('/movies/{0}/'.format(self.movie_owned_regular.id))
         force_authenticate(request, user=self.regular_user)
         response = self.view(request, pk=self.movie_owned_regular.pk)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 204)
     
+    def test_unauth(self):
+        request = self.factory.delete('/movies/{0}/'.format(self.movie_owned_regular.id))
+        response = self.view(request, pk=self.movie_owned_regular.pk)
+        self.assertEqual(response.status_code, 401)
+
     def test_regular_not_owner(self):
-        request = self.factory.get('/movies/{0}/'.format(self.movie_owned_admin.id))
+        request = self.factory.delete('/movies/{0}/'.format(self.movie_owned_admin.id))
         force_authenticate(request, user=self.regular_user)
         response = self.view(request, pk=self.movie_owned_admin.pk)
         self.assertEqual(response.status_code, 403)
     
     def test_admin(self):
-        request = self.factory.get('/movies/{0}/'.format(self.movie_owned_regular.id))
+        request = self.factory.delete('/movies/{0}/'.format(self.movie_owned_regular.id))
         force_authenticate(request, user=self.admin_user)
         response = self.view(request, pk=self.movie_owned_regular.pk)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 204)

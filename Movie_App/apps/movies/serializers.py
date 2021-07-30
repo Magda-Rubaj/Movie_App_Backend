@@ -1,19 +1,51 @@
 from rest_framework import serializers
-from .models import Movie
+from drf_writable_nested.serializers import WritableNestedModelSerializer
+from .models import Movie, Actor, Director
 
 
 class MovieSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
         fields = ('id', 'title', 'production_year', 'image',
-                 'description', 'added_by', 'rating')
+                  'description', 'added_by', 'rating', 'rating_count', 'users_voted')
 
-class ActorSerializer(serializers.ModelSerializer):
+    def validate_users_voted(self, value):
+        user =  self.context['request'].user
+        if user in value:
+            raise serializers.ValidationError("User already voted")
+        return value
+
+
+class MoviePartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
-        fields = ('id', 'name', 'birth_date', 'rating', 'roles', 'added_by')
+        fields = ('id', 'title')
+
+
+class ActorSerializer(WritableNestedModelSerializer):
+    roles = MoviePartSerializer(many=True, required=False)
+    class Meta:
+        model = Actor
+        fields = ('id', 'name', 'birth_date', 'image','rating', 
+                  'roles', 'added_by', 'rating_count', 'users_voted')
+
+    def validate_users_voted(self, value):
+        user =  self.context['request'].user
+        if user in value:
+            raise serializers.ValidationError("User already voted")
+        return value
+
+
 
 class DirectorSerializer(serializers.ModelSerializer):
+    directed = MoviePartSerializer(many=True, required=False)
     class Meta:
-        model = Movie
-        fields = ('id', 'name', 'birth_date', 'rating', 'directed', 'added_by')
+        model = Director
+        fields = ('id', 'name', 'birth_date',  'image', 'rating', 
+                  'directed', 'added_by', 'rating_count', 'users_voted')
+    
+    def validate_users_voted(self, value):
+        user =  self.context['request'].user
+        if user in value:
+            raise serializers.ValidationError("User already voted")
+        return value
