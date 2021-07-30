@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=50)
+    title = models.CharField(max_length=100)
     production_year = models.IntegerField()
     image = models.ImageField(default='defaults\movie.jpg', upload_to='posted_movies',)
     description = models.TextField()

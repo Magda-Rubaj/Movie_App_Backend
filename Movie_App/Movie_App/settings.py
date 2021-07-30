@@ -23,7 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY=config('SECRET_KEY')
+SECRET_KEY = config('SECRET_KEY')
+
+MOVIEDB_API_KEY = config('MOVIEDB_API_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -31,6 +33,10 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'accounts.User'
+
+CELERY_BROKER_URL = 'amqp://guest:guest@rabbitmq:5672/%2F'
+
+CELERY_RESULT_BACKEND = 'django-db'
 
 # Application definition
 
@@ -46,6 +52,7 @@ INSTALLED_APPS = [
     'apps.accounts',
     'apps.movies',
     'rest_framework_simplejwt',
+    'django_celery_results',
 ]
 
 REST_FRAMEWORK = {

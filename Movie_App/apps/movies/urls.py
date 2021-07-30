@@ -1,13 +1,14 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import MovieView, ActorView, DirectorView
+from . import views
 
 
 router = DefaultRouter()
-router.register(r'movies', MovieView)
-router.register(r'actors', ActorView)
-router.register(r'directors', DirectorView)
+router.register(r'movies', views.MovieView)
+router.register(r'actors', views.ActorView)
+router.register(r'directors', views.DirectorView)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('external/', views.ExternalApiView.as_view()),
 ]
