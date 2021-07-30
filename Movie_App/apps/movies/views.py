@@ -1,11 +1,12 @@
 from rest_framework import viewsets
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
+from django.conf import settings
 from .models import Movie, Actor, Director
 from .serializers import MovieSerializer, ActorSerializer, DirectorSerializer
-from .mixins import SwitchSerializerMixin, ExternalCallMixin
+from .mixins import SwitchSerializerMixin
 from .permissions import IsAdminOrOwner
+from .tasks import call_api
 
 
 class MovieView(viewsets.ModelViewSet):
@@ -26,28 +27,21 @@ class DirectorView(SwitchSerializerMixin, viewsets.ModelViewSet):
     queryset = Director.objects.all()
 
 
-class ExternalApiView(ExternalCallMixin, ListCreateAPIView):
+class ExternalApiView(ListCreateAPIView):
     permission_classes = (AllowAny, )
     serializer_class = MovieSerializer
     queryset = Movie.objects.all()
 
-    def get_model_fields(self, request, url, *args, **kwargs):
-        data = self.call_api(request, url, *args, **kwargs)
-        return [{
-            "title": entry["title"], 
-            "production_year": entry.get("release_date")[:4], 
-            "description": entry["overview"],
-            "added_by": 1
-        } for entry in data if entry.get("release_date") is not None]
+    def get_limit(self, request, *args, **kwargs):
+        limit_param = 'limit'
+        limit_value = request.query_params.get(limit_param, 1)
+        return limit_value
 
     def get(self, request, *args, **kwargs):
         url = ('https://api.themoviedb.org/3/movie/popular'
-               '?api_key=5a554cb0938200fedb337e0b6a2ca58b')
-        data = self.get_model_fields(request, url, *args, **kwargs)
-        for entry in data:
-            serializer = self.get_serializer(data=entry)
-            serializer.is_valid(raise_exception=True)
-            self.perform_create(serializer)
-        return Response(data=data)
+               '?api_key={0}'.format(settings.MOVIEDB_API_KEY))
+        limit = self.get_limit(request, *args, **kwargs)
+        call_api.delay(url)
+        return super().get(self, request, *args, **kwargs)
 
 
