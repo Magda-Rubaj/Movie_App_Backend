@@ -39,7 +39,7 @@ class ExternalApiView(ListCreateAPIView):
     def get(self, request, *args, **kwargs):
         url = ('https://api.themoviedb.org/3/movie/popular'
                '?api_key={0}'.format(settings.MOVIEDB_API_KEY))
-        limit = self.get_limit(request, *args, **kwargs)
+        limit = int(self.get_limit(request, *args, **kwargs))
         call_api.delay(url, limit, request.user.pk)
         return super().get(self, request, *args, **kwargs)
 
