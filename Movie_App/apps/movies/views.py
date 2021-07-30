@@ -28,7 +28,6 @@ class DirectorView(SwitchSerializerMixin, viewsets.ModelViewSet):
 
 
 class ExternalApiView(ListCreateAPIView):
-    permission_classes = (AllowAny, )
     serializer_class = MovieSerializer
     queryset = Movie.objects.all()
 
@@ -41,7 +40,7 @@ class ExternalApiView(ListCreateAPIView):
         url = ('https://api.themoviedb.org/3/movie/popular'
                '?api_key={0}'.format(settings.MOVIEDB_API_KEY))
         limit = self.get_limit(request, *args, **kwargs)
-        call_api.delay(url)
+        call_api.delay(url, limit, request.user.pk)
         return super().get(self, request, *args, **kwargs)
 
 
